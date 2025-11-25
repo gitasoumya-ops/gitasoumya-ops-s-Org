@@ -1,5 +1,6 @@
 import React from 'react';
 import { DownloadIcon } from './icons/DownloadIcon';
+import { ErrorIcon } from './icons/ErrorIcon';
 
 interface ImageDisplayProps {
     generatedImage: string | null;
@@ -32,22 +33,37 @@ const Placeholder: React.FC = () => (
     </div>
 );
 
+const ErrorDisplay: React.FC<{ message: string }> = ({ message }) => (
+    <div className="flex flex-col items-center justify-center h-full text-center p-8">
+        <div className="w-20 h-20 mb-4 text-red-500">
+            <ErrorIcon />
+        </div>
+        <h2 className="text-2xl font-bold text-white mb-4">Image Generation Failed</h2>
+        <p className="bg-red-900/30 border border-red-500/50 rounded-lg p-4 text-red-300 max-w-md shadow-lg">
+            {message}
+        </p>
+    </div>
+);
+
 
 export const ImageDisplay: React.FC<ImageDisplayProps> = ({ generatedImage, isLoading, error }) => {
     return (
         <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-2xl aspect-[16/9] flex items-center justify-center p-4 shadow-lg h-full">
             {isLoading && <LoadingSpinner />}
-            {error && <div className="text-red-400 text-center">{error}</div>}
+            {error && <ErrorDisplay message={error} />}
             {!isLoading && !error && generatedImage && (
-                <div className="relative w-full h-full group">
-                    <img src={generatedImage} alt="Generated" className="w-full h-full object-contain rounded-lg" />
+                <div className="flex flex-col items-center justify-center w-full h-full gap-4">
+                    <div className="flex-grow w-full relative min-h-0">
+                         <img src={generatedImage} alt="Generated" className="w-full h-full object-contain rounded-lg" />
+                    </div>
                     <a
                         href={generatedImage}
                         download="one-click-image.png"
-                        className="absolute bottom-4 right-4 bg-black/50 p-3 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="flex-shrink-0 flex items-center justify-center gap-2 py-2 px-6 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all shadow-lg transform hover:scale-105"
                         aria-label="Download image"
                     >
-                        <DownloadIcon className="w-6 h-6" />
+                        <DownloadIcon className="w-5 h-5" />
+                        <span>Download Image</span>
                     </a>
                 </div>
             )}

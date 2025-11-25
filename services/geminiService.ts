@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import type { AspectRatio, ImageStyle } from '../types';
 
@@ -29,7 +28,9 @@ export const generateImage = async (
     prompt: string,
     aspectRatio: AspectRatio,
     style: ImageStyle,
-    referenceImage: string | null
+    referenceImage: string | null,
+    negativePrompt: string,
+    seed: number | null
 ): Promise<string> => {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
 
@@ -47,15 +48,26 @@ export const generateImage = async (
     if (parts.length === 0) {
         throw new Error("Prompt or reference image must be provided.");
     }
+    
+    const config: any = {
+        imageConfig: {
+            aspectRatio,
+        },
+    };
+
+    if (negativePrompt) {
+        config.negativePrompt = negativePrompt;
+    }
+    
+    // Seed should be a positive integer
+    if (seed !== null && seed > 0) {
+        config.seed = seed;
+    }
 
     const response: GenerateContentResponse = await ai.models.generateContent({
         model: 'gemini-2.5-flash-image',
         contents: { parts },
-        config: {
-            imageConfig: {
-                aspectRatio,
-            },
-        },
+        config,
     });
 
     if (response.candidates && response.candidates[0].content.parts) {

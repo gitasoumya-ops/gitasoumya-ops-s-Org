@@ -22,6 +22,8 @@ const App: React.FC = () => {
     const [generatedImage, setGeneratedImage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [negativePrompt, setNegativePrompt] = useState<string>('');
+    const [seed, setSeed] = useState<number | null>(null);
 
     useEffect(() => {
         const timerId = setTimeout(() => {
@@ -48,7 +50,14 @@ const App: React.FC = () => {
         setGeneratedImage(null);
 
         try {
-            const imageUrl = await generateImage(prompt, aspectRatio, imageStyle, referenceImage);
+            const imageUrl = await generateImage(
+                prompt, 
+                aspectRatio, 
+                imageStyle, 
+                referenceImage,
+                negativePrompt,
+                seed
+            );
             setGeneratedImage(imageUrl);
         } catch (err) {
             console.error(err);
@@ -56,7 +65,7 @@ const App: React.FC = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [prompt, aspectRatio, imageStyle, referenceImage]);
+    }, [prompt, aspectRatio, imageStyle, referenceImage, negativePrompt, seed]);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900">
@@ -74,6 +83,10 @@ const App: React.FC = () => {
                         setReferenceImage={setReferenceImage}
                         isLoading={isLoading}
                         onGenerate={handleGenerate}
+                        negativePrompt={negativePrompt}
+                        setNegativePrompt={setNegativePrompt}
+                        seed={seed}
+                        setSeed={setSeed}
                     />
                 </div>
                 <div className="lg:col-span-8 xl:col-span-9">
