@@ -1,0 +1,7 @@
+{
+  "name": "Copy of One Click Image Ready",
+  "description": "An AI-powered image generator for creating stunning YouTube thumbnails, Instagram posts, posters, and logos with a single click. Supports text and voice prompts, reference images, various aspect ratios, and creative styles.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
